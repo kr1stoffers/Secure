@@ -1,4 +1,6 @@
 import math
+import numpy as np
+from sympy import Matrix
 
 
 def intro():
@@ -154,15 +156,53 @@ def vigenere(text, key):
     print("Decryption: " + decrypted)
 
 
-def sHill():
+def sHill(text):
+    alphabet = [chr(char) for char in range(ord("а"), ord("я") + 1)]
+    alphabet.insert(6, "ё")
 
-    True
+    text = np.asarray(list(text))
+
+    def encdec(text, flag=True):
+        charIndexOfText = [alphabet.index(i) for i in text]
+
+        encrypted = []
+        key = np.array([[4, 18, 15], [10, 11, 19], [32, 5, 23]])
+        if flag == False:
+            key = np.array(Matrix(key).inv_mod(33))
+
+        for i in range(3, len(text) + 1, 3):
+            vector = charIndexOfText[(i - 3) : i]
+            result = np.dot(key, vector)
+            encrypted += list(map(lambda x: int(x) % 33, list(result)))
+
+        encrypted = "".join(list(map(lambda x: alphabet[x], encrypted)))
+        return encrypted
+
+    # def inverse_modulo(matrix, mod):
+    #     sympy_matrix = Matrix(matrix)
+
+    #     if sympy_matrix.det() % mod == 0:
+    #         raise ValueError("Обратная матрица не существует по модулю {}".format(mod))
+
+    #     inverse_matrix = sympy_matrix.inv_mod(mod)
+
+    #     return np.array(inverse_matrix)
+
+    # a = a.reshape(2, 4)
+    # key = np.array([[4, 18, 15], [10, 11, 19], [32, 5, 23]])
+    # b = np.array([[9], [18], [19]])
+    # c = np.dot(key, b)
+    encryption = encdec(text)
+    print("Encryption: " + encryption)
+    dec = np.asarray(list(encryption))
+    print("Decryption: " + encdec(dec, False))
+
+    # for i in c:
+    #     print(i % 33)
+    # linalg.inv(a)
 
 
 def stairs(text):
-    # И Т О И О К Н Т Н И Г Н А Ь В Ч
-    #  С Р Ф Л В О С А Т Н Е Н Д Е И
-
     encrypted = "".join(
         [text[i] for i in range(0, len(text), 2)]
         + [text[i] for i in range(1, len(text), 2)]
@@ -202,6 +242,8 @@ match intro():
         vigenere(text, key)
     case 4:
         text = input("Текст: ").lower().replace(" ", "")
+
+        sHill(text)
 
     case 5:
         text = input("Текст: ").lower().replace(" ", "")
