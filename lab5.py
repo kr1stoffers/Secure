@@ -33,8 +33,6 @@ t = int.from_bytes(text.encode("utf-8"))
 enc = crypt(p, t)
 dec = decrypt(s, enc)
 
-# print(t)
 
 print(enc)
-# print(dec)
 print(dec.to_bytes((dec.bit_length() + 7) // 8).decode("utf-8"))
